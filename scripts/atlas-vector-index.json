@@ -1,0 +1,23 @@
+{
+  "_comment": "MongoDB Atlas Vector Search index definition for the `documentchunks` collection. This deployment runs on local standalone MongoDB (no Atlas), so vector-store.ts auto-detects that and falls back to in-memory brute-force cosine similarity — this file is not executable here. When the app moves to MongoDB Atlas, create this index (Atlas UI: Database > Search > Create Search Index > JSON Editor, or `mongosh`/Atlas CLI) on the `documentchunks` collection so vector-store.ts's runtime capability probe picks it up automatically; no code changes are needed.",
+  "name": "document_chunk_vector_index",
+  "type": "vectorSearch",
+  "definition": {
+    "fields": [
+      {
+        "type": "vector",
+        "path": "embedding",
+        "numDimensions": 768,
+        "similarity": "cosine"
+      },
+      {
+        "type": "filter",
+        "path": "organizationId"
+      },
+      {
+        "type": "filter",
+        "path": "documentId"
+      }
+    ]
+  }
+}

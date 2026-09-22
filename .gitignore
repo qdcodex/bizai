@@ -32,9 +32,16 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
+
+# locally-stored uploaded documents (dev storage backend)
+/.data/
+
+# local Claude Code runtime state (not shared config)
+.claude/*.lock
 
 # typescript
 *.tsbuildinfo
