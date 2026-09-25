@@ -2,6 +2,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { requireSession } from "@/lib/auth/guards";
 import { getWorkspaceContext, listOrganizationMembers } from "@/services/workspace.service";
+import { CreateUserDialog } from "@/components/settings/create-user-dialog";
+import { ModuleAccessMatrix } from "@/components/settings/module-access-matrix";
+import { ROLES, ROLE_RANK, roleAtLeast } from "@/models/roles";
 
 const ROLE_LABEL: Record<string, string> = {
   owner: "Owner",
@@ -15,6 +18,8 @@ export default async function SettingsPage() {
   const session = await requireSession();
   const workspace = await getWorkspaceContext(session);
   const members = await listOrganizationMembers(workspace.organization.id);
+  const canManageTeam = roleAtLeast(workspace.role, "admin");
+  const assignableRoles = ROLES.filter((r) => ROLE_RANK[r] <= ROLE_RANK[workspace.role]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -65,8 +70,13 @@ export default async function SettingsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Team</CardTitle>
-          <CardDescription>People with access to this workspace.</CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-base">Team</CardTitle>
+              <CardDescription>People with access to this workspace.</CardDescription>
+            </div>
+            {canManageTeam && <CreateUserDialog assignableRoles={assignableRoles} />}
+          </div>
         </CardHeader>
         <CardContent>
           <div className="divide-y rounded-md border">
@@ -82,6 +92,20 @@ export default async function SettingsPage() {
           </div>
         </CardContent>
       </Card>
+
+      {canManageTeam && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Module Access</CardTitle>
+            <CardDescription>
+              Choose which modules each role can see and use. Applies immediately, including to direct links.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ModuleAccessMatrix initialVisibility={workspace.organization.moduleVisibility} />
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

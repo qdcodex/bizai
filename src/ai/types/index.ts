@@ -1,4 +1,5 @@
 import type { Role } from "@/models/roles";
+import type { ModuleVisibility } from "@/lib/auth/modules";
 
 /**
  * Server-resolved context injected into every tool via closure over the
@@ -10,6 +11,8 @@ export interface ToolContext {
   userId: string;
   role: Role;
   conversationId: string;
+  /** The org's Module Access setting; tools for modules hidden from this role are excluded. Omitted = all visible. */
+  moduleVisibility?: ModuleVisibility;
 }
 
 export type ToolMode = "read" | "write";

@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Loader2, Pencil, Printer } from "lucide-react";
+import { Loader2, Pencil, Printer, Receipt } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import type { QuotationStatus } from "@/models/Quotation";
@@ -25,7 +25,7 @@ export function QuotationActions({
   const router = useRouter();
   const [pendingAction, setPendingAction] = useState<string | null>(null);
 
-  async function post(path: string, body?: unknown) {
+  async function post(path: string, successMessage: string, body?: unknown) {
     setPendingAction(path);
     try {
       const response = await fetch(`/api/quotations/${quotationId}${path}`, {
@@ -38,7 +38,10 @@ export function QuotationActions({
         toast.error(result.error.message);
         return;
       }
-      toast.success("Quotation updated");
+      toast.success(successMessage);
+      if (path === "/convert") {
+        router.push(`/invoices/${quotationId}`);
+      }
       router.refresh();
     } finally {
       setPendingAction(null);
@@ -67,7 +70,7 @@ export function QuotationActions({
             <Pencil />
             Edit
           </Button>
-          <Button disabled={pendingAction !== null} onClick={() => post("/submit")}>
+          <Button disabled={pendingAction !== null} onClick={() => post("/submit", "Submitted for approval")}>
             {isBusy("/submit") ? <Loader2 className="animate-spin" /> : null}
             Submit
           </Button>
@@ -86,7 +89,7 @@ export function QuotationActions({
 
       {status === "PENDING_APPROVAL" && canApprove && (
         <>
-          <Button disabled={pendingAction !== null} onClick={() => post("/approve")}>
+          <Button disabled={pendingAction !== null} onClick={() => post("/approve", "Quotation approved")}>
             {isBusy("/approve") ? <Loader2 className="animate-spin" /> : null}
             Approve
           </Button>
@@ -96,15 +99,25 @@ export function QuotationActions({
             description="The requester will need to revise and resubmit it."
             confirmLabel="Reject"
             destructive
-            onConfirm={() => post("/reject")}
+            onConfirm={() => post("/reject", "Quotation rejected")}
           />
         </>
       )}
 
       {status === "APPROVED" && canUpdate && (
-        <Button disabled={pendingAction !== null} onClick={() => post("/convert")}>
-          {isBusy("/convert") ? <Loader2 className="animate-spin" /> : null}
-          Convert to Sale
+        <ConfirmDialog
+          trigger={<Button disabled={pendingAction !== null}>Convert to Sale</Button>}
+          title="Convert to a sale?"
+          description="Stock for every line item will be deducted from inventory and an invoice will be created. This cannot be undone."
+          confirmLabel="Convert"
+          onConfirm={() => post("/convert", "Converted to sale — invoice created")}
+        />
+      )}
+
+      {status === "CONVERTED" && (
+        <Button render={<Link href={`/invoices/${quotationId}`} />}>
+          <Receipt />
+          View Invoice
         </Button>
       )}
 

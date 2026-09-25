@@ -4,6 +4,7 @@ import { requirePagePermission } from "@/lib/auth/permissions";
 import { getCustomer } from "@/services/customer.service";
 import { AppError } from "@/lib/errors";
 import type { CustomerDocument } from "@/models/Customer";
+import { BackLink } from "@/components/shared/back-link";
 
 export default async function EditCustomerPage({
   params,
@@ -22,7 +23,8 @@ export default async function EditCustomerPage({
   }
 
   return (
-    <div className="mx-auto w-full max-w-3xl">
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-4">
+      <BackLink href={`/customers/${id}`} label="Back to customer" />
       <CustomerForm
         mode="edit"
         customerId={id}

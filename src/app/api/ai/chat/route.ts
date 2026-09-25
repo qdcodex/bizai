@@ -38,6 +38,7 @@ export async function POST(request: NextRequest) {
     return await runChatTurn({
       session,
       organizationName: workspace.organization.name,
+      moduleVisibility: workspace.organization.moduleVisibility,
       conversationId: body.id,
       previousMessages,
       newMessage: body.message,

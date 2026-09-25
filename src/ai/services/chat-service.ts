@@ -13,10 +13,12 @@ import { recordAIUsage } from "@/ai/services/usage-service";
 import { saveConversationMessages } from "@/ai/services/conversation-service";
 import type { SessionPayload } from "@/lib/auth/session";
 import type { ToolContext } from "@/ai/types";
+import type { ModuleVisibility } from "@/lib/auth/modules";
 
 export interface RunChatTurnInput {
   session: SessionPayload;
   organizationName: string;
+  moduleVisibility: ModuleVisibility;
   conversationId: string;
   previousMessages: UIMessage[];
   newMessage: UIMessage;
@@ -35,6 +37,7 @@ export async function runChatTurn(input: RunChatTurnInput): Promise<Response> {
     userId: input.session.userId,
     role: input.session.role,
     conversationId: input.conversationId,
+    moduleVisibility: input.moduleVisibility,
   };
   const { tools, stopWhen, startedAt } = prepareOrchestratedRun(context);
 

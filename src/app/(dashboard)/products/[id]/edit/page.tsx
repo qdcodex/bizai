@@ -4,6 +4,7 @@ import { requirePagePermission } from "@/lib/auth/permissions";
 import { getProduct } from "@/services/product.service";
 import { AppError } from "@/lib/errors";
 import type { ProductDocument } from "@/models/Product";
+import { BackLink } from "@/components/shared/back-link";
 
 export default async function EditProductPage({
   params,
@@ -22,7 +23,8 @@ export default async function EditProductPage({
   }
 
   return (
-    <div className="mx-auto w-full max-w-3xl">
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-4">
+      <BackLink href={`/products/${id}`} label="Back to product" />
       <ProductForm
         mode="edit"
         productId={id}

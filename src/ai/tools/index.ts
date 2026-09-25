@@ -1,6 +1,7 @@
 import type { ToolSet } from "ai";
 import { can, type Permission } from "@/lib/auth/permissions";
-import type { ToolContext, ToolRegistryEntry } from "@/ai/types";
+import { isModuleVisible, type ModuleKey } from "@/lib/auth/modules";
+import type { ToolCategory, ToolContext, ToolRegistryEntry } from "@/ai/types";
 import { createProductTools, PRODUCT_TOOL_REGISTRY } from "@/ai/tools/product-tools";
 import { createInventoryTools, INVENTORY_TOOL_REGISTRY } from "@/ai/tools/inventory-tools";
 import { createCustomerTools, CUSTOMER_TOOL_REGISTRY } from "@/ai/tools/customer-tools";
@@ -19,6 +20,15 @@ export const TOOL_REGISTRY: ToolRegistryEntry[] = [
 ];
 
 const REGISTRY_BY_NAME = new Map(TOOL_REGISTRY.map((entry) => [entry.name, entry]));
+
+/** Which Module Access toggle governs each tool category. PRODUCTS isn't a hideable module. */
+const CATEGORY_MODULE: Partial<Record<ToolCategory, ModuleKey>> = {
+  INVENTORY: "inventory",
+  CUSTOMERS: "customers",
+  SUPPLIERS: "suppliers",
+  QUOTATIONS: "quotations",
+  KNOWLEDGE: "knowledge",
+};
 
 /**
  * Builds the toolset available to the model for this request. Tools are
@@ -42,9 +52,10 @@ export function buildTools(context: ToolContext): ToolSet {
   for (const [name, toolDef] of Object.entries(allTools)) {
     const entry = REGISTRY_BY_NAME.get(name);
     if (!entry) continue; // unregistered tool — fail closed
-    if (can(context.role, entry.permission as Permission)) {
-      allowed[name] = toolDef;
-    }
+    if (!can(context.role, entry.permission as Permission)) continue;
+    const moduleKey = CATEGORY_MODULE[entry.category];
+    if (moduleKey && !isModuleVisible(context.moduleVisibility, context.role, moduleKey)) continue;
+    allowed[name] = toolDef;
   }
   return allowed;
 }

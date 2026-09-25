@@ -4,6 +4,7 @@ import { requirePagePermission } from "@/lib/auth/permissions";
 import { getQuotation } from "@/services/quotation.service";
 import { AppError } from "@/lib/errors";
 import type { DraftLine } from "@/components/quotations/quotation-line-items";
+import { BackLink } from "@/components/shared/back-link";
 
 export default async function EditQuotationPage({
   params,
@@ -39,7 +40,8 @@ export default async function EditQuotationPage({
   }));
 
   return (
-    <div className="mx-auto w-full max-w-4xl">
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-4">
+      <BackLink href={`/quotations/${id}`} label="Back to quotation" />
       <QuotationEditForm
         quotationId={id}
         initialCustomer={{

@@ -35,7 +35,7 @@ export default async function QuotationDetailPage({
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center justify-between gap-3 print:hidden">
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="icon-sm" render={<Link href="/quotations" />}>
+          <Button variant="ghost" size="icon-sm" aria-label="Back to quotations" render={<Link href="/quotations" />}>
             <ArrowLeft />
           </Button>
           <div>
@@ -114,29 +114,28 @@ export default async function QuotationDetailPage({
               ))}
             </TableBody>
           </Table>
+          <div className="flex justify-end border-t px-6 py-4">
+            <div className="flex w-full max-w-xs flex-col gap-1.5 text-sm">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Subtotal</span>
+                <MoneyDisplay value={quotation.subtotal} />
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Discount</span>
+                <MoneyDisplay value={quotation.discount} />
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Tax</span>
+                <MoneyDisplay value={quotation.tax} />
+              </div>
+              <div className="flex justify-between border-t pt-2 text-base font-semibold">
+                <span>Total</span>
+                <MoneyDisplay value={quotation.total} />
+              </div>
+            </div>
+          </div>
         </CardContent>
       </Card>
-
-      <div className="flex justify-end">
-        <div className="flex w-full max-w-xs flex-col gap-1 text-sm">
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Subtotal</span>
-            <MoneyDisplay value={quotation.subtotal} />
-          </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Discount</span>
-            <MoneyDisplay value={quotation.discount} />
-          </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Tax</span>
-            <MoneyDisplay value={quotation.tax} />
-          </div>
-          <div className="flex justify-between border-t pt-1 text-base font-semibold">
-            <span>Total</span>
-            <MoneyDisplay value={quotation.total} />
-          </div>
-        </div>
-      </div>
 
       {quotation.notes && (
         <Card className="print:hidden">

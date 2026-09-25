@@ -64,10 +64,10 @@ export function QuotationLineItems({
         <TableHeader>
           <TableRow>
             <TableHead>Product</TableHead>
-            <TableHead className="w-24 text-right">Qty</TableHead>
-            <TableHead className="w-32 text-right">Price</TableHead>
-            <TableHead className="w-28 text-right">Discount</TableHead>
-            <TableHead className="w-28 text-right">Tax</TableHead>
+            <TableHead className="w-20 text-right">Qty</TableHead>
+            <TableHead className="w-28 text-right">Price</TableHead>
+            <TableHead className="w-24 text-right">Discount</TableHead>
+            <TableHead className="w-24 text-right">Tax</TableHead>
             <TableHead className="w-32 text-right">Line Total</TableHead>
             <TableHead className="w-10" />
           </TableRow>
@@ -89,8 +89,9 @@ export function QuotationLineItems({
                   type="number"
                   min={1}
                   value={line.quantity}
+                  aria-label={`Quantity for ${line.itemName}`}
                   onChange={(e) => updateLine(line.key, { quantity: Number(e.target.value) || 1 })}
-                  className="text-right"
+                  className="min-w-16 text-right tabular-nums [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                 />
               </TableCell>
               <TableCell>
@@ -98,8 +99,9 @@ export function QuotationLineItems({
                   type="number"
                   step="0.01"
                   value={line.unitPrice}
+                  aria-label={`Unit price for ${line.itemName}`}
                   onChange={(e) => updateLine(line.key, { unitPrice: Number(e.target.value) || 0 })}
-                  className="text-right"
+                  className="min-w-16 text-right tabular-nums [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                 />
               </TableCell>
               <TableCell>
@@ -107,8 +109,9 @@ export function QuotationLineItems({
                   type="number"
                   step="0.01"
                   value={line.discount}
+                  aria-label={`Discount for ${line.itemName}`}
                   onChange={(e) => updateLine(line.key, { discount: Number(e.target.value) || 0 })}
-                  className="text-right"
+                  className="min-w-16 text-right tabular-nums [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                 />
               </TableCell>
               <TableCell>
@@ -116,15 +119,21 @@ export function QuotationLineItems({
                   type="number"
                   step="0.01"
                   value={line.tax}
+                  aria-label={`Tax for ${line.itemName}`}
                   onChange={(e) => updateLine(line.key, { tax: Number(e.target.value) || 0 })}
-                  className="text-right"
+                  className="min-w-16 text-right tabular-nums [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                 />
               </TableCell>
               <TableCell className="text-right font-medium">
                 <MoneyDisplay value={lineTotal(line)} />
               </TableCell>
               <TableCell>
-                <Button variant="ghost" size="icon-sm" onClick={() => removeLine(line.key)}>
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  aria-label={`Remove ${line.itemName}`}
+                  onClick={() => removeLine(line.key)}
+                >
                   <Trash2 />
                 </Button>
               </TableCell>

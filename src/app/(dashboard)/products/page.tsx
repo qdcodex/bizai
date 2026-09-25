@@ -90,12 +90,12 @@ export default async function ProductsPage({
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Item Code</TableHead>
+                    <TableHead className="hidden lg:table-cell">Item Code</TableHead>
                     <TableHead>Product Name</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Part Number</TableHead>
-                    <TableHead>UOM</TableHead>
-                    <TableHead className="text-right">Cost Price</TableHead>
+                    <TableHead className="hidden lg:table-cell">Category</TableHead>
+                    <TableHead className="hidden xl:table-cell">Part Number</TableHead>
+                    <TableHead className="hidden xl:table-cell">UOM</TableHead>
+                    <TableHead className="hidden text-right xl:table-cell">Cost Price</TableHead>
                     <TableHead className="text-right">Selling Price</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
@@ -104,12 +104,19 @@ export default async function ProductsPage({
                 <TableBody>
                   {products.map((product) => (
                     <TableRow key={product.productId}>
-                      <TableCell className="font-mono text-xs">{product.itemCode}</TableCell>
-                      <TableCell className="font-medium">{product.itemName}</TableCell>
-                      <TableCell className="text-muted-foreground">{product.category || "—"}</TableCell>
-                      <TableCell className="text-muted-foreground">{product.partNumber || "—"}</TableCell>
-                      <TableCell className="text-muted-foreground">{product.uom}</TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="hidden font-mono text-xs lg:table-cell">{product.itemCode}</TableCell>
+                      <TableCell className="font-medium">
+                        {product.itemName}
+                        <div className="font-mono text-xs text-muted-foreground lg:hidden">{product.itemCode}</div>
+                      </TableCell>
+                      <TableCell className="hidden text-muted-foreground lg:table-cell">
+                        {product.category || "—"}
+                      </TableCell>
+                      <TableCell className="hidden text-muted-foreground xl:table-cell">
+                        {product.partNumber || "—"}
+                      </TableCell>
+                      <TableCell className="hidden text-muted-foreground xl:table-cell">{product.uom}</TableCell>
+                      <TableCell className="hidden text-right xl:table-cell">
                         <MoneyDisplay value={product.costPrice} />
                       </TableCell>
                       <TableCell className="text-right">

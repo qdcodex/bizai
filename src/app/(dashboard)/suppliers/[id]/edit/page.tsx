@@ -4,6 +4,7 @@ import { requirePagePermission } from "@/lib/auth/permissions";
 import { getSupplier } from "@/services/supplier.service";
 import { AppError } from "@/lib/errors";
 import type { SupplierDocument } from "@/models/Supplier";
+import { BackLink } from "@/components/shared/back-link";
 
 export default async function EditSupplierPage({
   params,
@@ -22,7 +23,8 @@ export default async function EditSupplierPage({
   }
 
   return (
-    <div className="mx-auto w-full max-w-3xl">
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-4">
+      <BackLink href={`/suppliers/${id}`} label="Back to supplier" />
       <SupplierForm
         mode="edit"
         supplierId={id}

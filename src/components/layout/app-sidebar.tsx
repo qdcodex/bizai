@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/sidebar";
 import { NAV_ITEMS, ADMIN_NAV_ITEMS, type NavItem } from "@/lib/nav";
 import { roleAtLeast, type Role } from "@/models/roles";
+import { isModuleVisible, type ModuleVisibility } from "@/lib/auth/modules";
 
 function NavItems({ items, pathname }: { items: NavItem[]; pathname: string }) {
   return (
@@ -36,9 +37,20 @@ function NavItems({ items, pathname }: { items: NavItem[]; pathname: string }) {
   );
 }
 
-export function AppSidebar({ organizationName, role }: { organizationName: string; role: Role }) {
+export function AppSidebar({
+  organizationName,
+  role,
+  moduleVisibility,
+}: {
+  organizationName: string;
+  role: Role;
+  moduleVisibility: ModuleVisibility;
+}) {
   const pathname = usePathname();
   const isAdmin = roleAtLeast(role, "admin");
+  const visibleNavItems = NAV_ITEMS.filter(
+    (item) => !item.moduleKey || isModuleVisible(moduleVisibility, role, item.moduleKey),
+  );
 
   return (
     <Sidebar collapsible="icon">
@@ -56,7 +68,7 @@ export function AppSidebar({ organizationName, role }: { organizationName: strin
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
-            <NavItems items={NAV_ITEMS} pathname={pathname} />
+            <NavItems items={visibleNavItems} pathname={pathname} />
           </SidebarGroupContent>
         </SidebarGroup>
         {isAdmin && (

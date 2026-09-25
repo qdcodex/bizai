@@ -14,14 +14,16 @@ import { ErrorState } from "@/components/error-state";
 export function ChatPanel({
   initialConversationId,
   initialMessages,
+  initialInput = "",
   onConversationCreated,
 }: {
   initialConversationId: string | null;
   initialMessages: UIMessage[];
+  initialInput?: string;
   onConversationCreated: (id: string, title: string) => void;
 }) {
   const conversationIdRef = useRef<string | null>(initialConversationId);
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState(initialInput);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // No ref access here: `id` arrives via the per-call `body` override passed

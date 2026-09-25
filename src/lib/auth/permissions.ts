@@ -3,6 +3,8 @@ import { AppError } from "@/lib/errors";
 import { roleAtLeast, type Role } from "@/models/roles";
 import type { SessionPayload } from "@/lib/auth/session";
 import { requireSession } from "@/lib/auth/guards";
+import { permissionPrefixToModuleKey } from "@/lib/auth/modules";
+import { canAccessModule } from "@/lib/auth/module-access";
 
 /**
  * Centralized permission matrix: the minimum role required for each
@@ -56,11 +58,22 @@ export function requirePermission(session: SessionPayload, permission: Permissio
   }
 }
 
-/** Server Component variant: redirects instead of throwing. */
+/**
+ * Server Component variant: redirects instead of throwing. Also enforces
+ * the admin-configurable module visibility setting (Settings -> Module
+ * Access) for whichever module this permission belongs to — derived from
+ * the permission's own prefix, so no page needs to call anything extra.
+ */
 export async function requirePagePermission(permission: Permission): Promise<SessionPayload> {
   const session = await requireSession();
   if (!can(session.role, permission)) {
     redirect("/dashboard?error=forbidden");
   }
+
+  const moduleKey = permissionPrefixToModuleKey(permission);
+  if (moduleKey && !(await canAccessModule(session.organizationId, session.role, moduleKey))) {
+    redirect("/dashboard?error=module-disabled");
+  }
+
   return session;
 }

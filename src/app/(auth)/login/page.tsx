@@ -1,7 +1,6 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -91,17 +90,11 @@ function LoginForm() {
           </div>
           {error ? <p className="text-sm text-destructive">{error}</p> : null}
         </CardContent>
-        <CardFooter className="flex flex-col gap-4">
+        <CardFooter>
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? <Loader2 className="animate-spin" /> : null}
             Sign in
           </Button>
-          <p className="text-center text-sm text-muted-foreground">
-            Don&apos;t have an account?{" "}
-            <Link href="/register" className="font-medium text-primary underline-offset-4 hover:underline">
-              Create one
-            </Link>
-          </p>
         </CardFooter>
       </form>
     </Card>

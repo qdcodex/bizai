@@ -8,9 +8,11 @@ import { ChatPanel } from "@/components/assistant/chat-panel";
 export function AssistantShell({
   conversationId,
   initialMessages,
+  initialInput,
 }: {
   conversationId: string | null;
   initialMessages: UIMessage[];
+  initialInput?: string;
 }) {
   const [refreshKey, setRefreshKey] = useState(0);
   const [activeId, setActiveId] = useState(conversationId);
@@ -22,6 +24,7 @@ export function AssistantShell({
         key={conversationId ?? "new"}
         initialConversationId={conversationId}
         initialMessages={initialMessages}
+        initialInput={initialInput}
         onConversationCreated={(id) => {
           setActiveId(id);
           setRefreshKey((k) => k + 1);
